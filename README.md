@@ -4,7 +4,7 @@ If the value matches "\0\t\nbob", the module should return the "ok" rcode. If
 the value does not match or the User-Name attribute is not present, the module should return the
 "reject" rcode.
 
-How to install freeRadius in Ubuntu 22.0.01:
+How to install freeRadius in Ubuntu 22.04.04 LTS:
 ----------
 ### Update the system and install all dependecies
 
