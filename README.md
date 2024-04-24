@@ -142,7 +142,7 @@ if not found do this step to install python properly:
 ## Result
 
 ### 1 .Test for Username = \0\t\nbob or \x00\t\nbob with password = hellobob and secret : testing123.\
-we are sendinf the input as octal sequence : 
+Sending user name as octal sequence : 
 radtest input : 
 ```console
 echo  'User-Name = \x00\011\012bob, User-Password = hellobob' | radclient -x localhost auth testing123
@@ -157,9 +157,11 @@ Sent Access-Request Id 118 from 0.0.0.0:57029 to 127.0.0.1:1812 length 49
 Received Access-Reject Id 118 from 127.0.0.1:1812 to 127.0.0.1:57029 length 20
 (0) -: Expected Access-Accept got Access-Reject"
 ```
-radiusd -X output :
-Octal form User-Name that is sent does not match the expected escape sequence Username 
-if username start with null character and radclient. 
+radiusd -X output :\
+<span style="color: red;"> Octal sequence  user-Name that is sent does not match the expected escape sequence user name 
+if username start with null character and radclient client sent the escape sequence with a extra blaclslash(\).
+But it does work with all octal sequence not starting with null character aas shown in Test 2 exmample. </span>
+
 ```console
 ('username :', '\\x00\t\nbob')
 ('expected_username :', '\x00\t\nbob')
