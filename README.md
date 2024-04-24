@@ -158,9 +158,7 @@ Received Access-Reject Id 118 from 127.0.0.1:1812 to 127.0.0.1:57029 length 20
 (0) -: Expected Access-Accept got Access-Reject"
 ```
 radiusd -X output :\
-<span style="color: red;"> Octal sequence  user-Name that is sent does not match the expected escape sequence user name 
-if username start with null character and radclient client sent the escape sequence with a extra blaclslash(\).
-But it does work with all octal sequence not starting with null character aas shown in Test 2 exmample. </span>
+<span style="color: red;"> When a username starts with a null character, `radclient` sends the escape sequence with an extra backslash. However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
 
 ```console
 ('username :', '\\x00\t\nbob')
