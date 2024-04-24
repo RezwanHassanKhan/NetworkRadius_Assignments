@@ -141,7 +141,8 @@ if not found do this step to install python properly:
 ```
 ## Result
 Test for Username = John Doe with password = hello and secret : testing123.\
-Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter
+Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter\
+radtest input : 
 ```console
 1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123.
 ```
