@@ -147,7 +147,7 @@ Before test, change the policy for white_space from this location : sudo vim /us
 
 radtest input : 
 ```console
-1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123.
+1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123
 ```
 radtest output : 
 ```console
@@ -213,4 +213,76 @@ User-Name matches the expected value
 (1) Finished request
 
 ````
+## Result
+
+### 2 .Test for Username = bob with password = hellobob and secret : testing123.\
+
+Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
+
+radtest input : 
+```console
+1. radtest -x 'bob' hellobob 127.0.0.1 0 testing123
+```
+radtest output : 
+```console
+Sent Access-Request Id 11 from 0.0.0.0:52876 to 127.0.0.1:1812 length 73
+	User-Name = "bob"
+	User-Password = "hellobob"
+	NAS-IP-Address = 127.0.1.1
+	NAS-Port = 0
+	Message-Authenticator = 0x00
+	Cleartext-Password = "hellobob"
+Received Access-Accept Id 11 from 127.0.0.1:1812 to 127.0.0.1:52876 length 32
+	Reply-Message = "Hello, bob"
+```
+radiusd -X output :
+```console
+User-Name matches the expected value
+(0)     [python] = ok
+(0)     [chap] = noop
+(0)     [mschap] = noop
+(0)     [digest] = noop
+(0) suffix: Checking for suffix after "@"
+(0) suffix: No '@' in User-Name = "bob", looking up realm NULL
+(0) suffix: No such realm "NULL"
+(0)     [suffix] = noop
+(0) eap: No EAP-Message, not doing EAP
+(0)     [eap] = noop
+(0) files: users: Matched entry bob at line 92
+(0) files: EXPAND Hello, %{User-Name}
+(0) files:    --> Hello, bob
+(0)     [files] = ok
+(0)     [expiration] = noop
+(0)     [logintime] = noop
+(0)     [pap] = updated
+(0)   } # authorize = updated
+(0) Found Auth-Type = PAP
+(0) # Executing group from file /usr/local/etc/raddb/sites-enabled/default
+(0)   Auth-Type PAP {
+(0) pap: Login attempt with password
+(0) pap: Comparing with "known good" Cleartext-Password
+(0) pap: User authenticated successfully
+(0)     [pap] = ok
+(0)   } # Auth-Type PAP = ok
+(0) # Executing section post-auth from file /usr/local/etc/raddb/sites-enabled/default
+(0)   post-auth {
+(0)     if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name)) {
+(0)     if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name))  -> FALSE
+(0)     update {
+(0)       No attributes updated for RHS &session-state:
+(0)     } # update = noop
+(0)     [exec] = noop
+(0)     policy remove_reply_message_if_eap {
+(0)       if (&reply:EAP-Message && &reply:Reply-Message) {
+(0)       if (&reply:EAP-Message && &reply:Reply-Message)  -> FALSE
+(0)       else {
+(0)         [noop] = noop
+(0)       } # else = noop
+(0)     } # policy remove_reply_message_if_eap = noop
+(0)     if (EAP-Key-Name && &reply:EAP-Session-Id) {
+(0)     if (EAP-Key-Name && &reply:EAP-Session-Id)  -> FALSE
+(0)   } # post-auth = noop
+(0) Sent Access-Accept Id 11 from 127.0.0.1:1812 to 127.0.0.1:52876 length 32
+(0)   Reply-Message = "Hello, bob"
+(0) Finished request
 Reach out to Rezwan at md.rezwanhassankhan@gmail.com for any further questions. :)
