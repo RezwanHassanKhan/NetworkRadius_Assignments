@@ -1,10 +1,8 @@
 # Python Script to Check User-Name in an Incoming Request
 
-If the value matches "\0\t\nbob", the module should return the "ok" rcode. If
-the value does not match or the User-Name attribute is not present, the module should return the
-"reject" rcode.
+If the value matches "\0\t\nbob", the module should return the "ok" rcode. If the value does not match, or the User-Name attribute is absent, the module should return the "reject" rcode.
 
-How to install freeRadius in Ubuntu 22.04.04 LTS:
+How to install FreeRadius in Ubuntu 22.04.04 LTS:
 ----------
 ### Update the system and install all dependecies
 
@@ -40,20 +38,8 @@ Sometime server.pem is not configured in ../raddb/certs/. So follo this step:
 ```console
 radiusd -X
 ```
-### Edit the Users Database  :
-```console
-1. cd /usr/local/etc/raddb
-2. sudo vim users 
-3. Uncomment this line : 
-bob     Cleartext-Password := "hello"
-        Reply-Message := "Hello, %{User-Name}"
-```
-### Do a quick test in radtest and radclient :
-```console
-1. radtest bob hello 127.0.0.1 0 testing123
-2.  echo "User-Name = bob, User-Password = hello" | radclient localhost auth testing123
-```
 CONGRATULATIONS!!! SERVER IS UP AND ACCEPTING AND SENDING  REQUEST
+
 ### Building the python script "check_username.py" 
 
 ```console
@@ -74,10 +60,17 @@ def authorize(p):
         # User-Name not found
         radiusd.radlog(radiusd.L_ERR, 'User-Name not found in the request')
         return radiusd.RLM_MODULE_REJECT
+  
+    #Check if User-Name matches the specified pattern
+    #Some test usernames being tested are: Bob, John Doe, \t\t\nbob.
+    
+    #This is excape  sequence equilvalent to \x00\011\012bob in octal sequence form
+    expected_username = "\x00\t\nbob"
 
-    # Check if User-Name matches the specified pattern
-   # if username == "bob":
-    if username == "0\t\nbob":
+    print('escape sequence username returned from radclient :', username)
+    print('escape sequence username :', expected_username)
+    
+    if username == expected_username :
         radiusd.radlog(radiusd.L_INFO, 'User-Name matches the expected value')
         return radiusd.RLM_MODULE_OK
     else:
@@ -88,7 +81,6 @@ def authorize(p):
 
 ### Configuring FreeRADIUS to Use the Python Script
 If the Python module is not enabled in your FreeRADIUS setup, create a symbolic link from mods-available to mods-enabled:
-
 ```console
 1. cd usr/local/etc/raddb/mods-enabled/
 2. ln usr/local/etc/raddb/mods-available/python
@@ -135,11 +127,8 @@ if not found do this step to install python properly:
 3. sudo make install
 4. radiusd -X
 ```
-## Testing with radclient
-```console
-1. echo "User-Name = \000\011\012bob, User-Password = hello" | radclient localhost auth testing123
-```
-## Result
+
+## Testing 
 
 ### 1 .Test for Username = \0\t\nbob or \x00\t\nbob with password = hellobob and secret : testing123.\
 Sending user name as octal sequence : 
@@ -158,7 +147,7 @@ Received Access-Reject Id 118 from 127.0.0.1:1812 to 127.0.0.1:57029 length 20
 (0) -: Expected Access-Accept got Access-Reject"
 ```
 radiusd -X output :\
-<span style="color: red;"> When a username starts with a null character, `radclient` sends the escape sequence with an extra backslash. However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
+<span style="color: red;"> User Name does not match the expected value beacuse when a octal sequence starts with a null character, `radclient` sends the escape sequence with an extra backslash(\). However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
 
 ```console
 ('escape sequence username returned from radclien :', '\\x00\t\nbob')
