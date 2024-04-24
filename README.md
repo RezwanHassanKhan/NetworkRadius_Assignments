@@ -140,5 +140,62 @@ if not found do this step to install python properly:
 1. echo "User-Name = \000\011\012bob, User-Password = hello" | radclient localhost auth testing123
 ```
 ## Result
+Test for Username = John Doe with password = hello and secret : testing123
+```console
+1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123
+radiusd -X output :
+```console
+User-Name matches the expected value
+(1)     [python] = ok
+(1)     [chap] = noop
+(1)     [mschap] = noop
+(1)     [digest] = noop
+(1) suffix: Checking for suffix after "@"
+(1) suffix: No '@' in User-Name = "John Doe", looking up realm NULL
+(1) suffix: No such realm "NULL"
+(1)     [suffix] = noop
+(1) eap: No EAP-Message, not doing EAP
+(1)     [eap] = noop
+(1) files: users: Matched entry John Doe at line 103
+(1) files: EXPAND Hello, %{User-Name}
+(1) files:    --> Hello, John Doe
+(1)     [files] = ok
+(1)     [expiration] = noop
+(1)     [logintime] = noop
+(1)     [pap] = updated
+(1)   } # authorize = updated
+(1) Found Auth-Type = PAP
+(1) # Executing group from file /usr/local/etc/raddb/sites-enabled/default
+(1)   Auth-Type PAP {
+(1) pap: Login attempt with password
+(1) pap: Comparing with "known good" Cleartext-Password
+(1) pap: User authenticated successfully
+(1)     [pap] = ok
+(1)   } # Auth-Type PAP = ok
+(1) # Executing section post-auth from file /usr/local/etc/raddb/sites-enabled/default
+(1)   post-auth {
+(1)     if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name)) {
+(1)     if (session-state:User-Name && reply:User-Name && request:User-Name && (reply:User-Name == request:User-Name))  -> FALSE
+(1)     update {
+(1)       No attributes updated for RHS &session-state:
+(1)     } # update = noop
+(1)     [exec] = noop
+(1)     policy remove_reply_message_if_eap {
+(1)       if (&reply:EAP-Message && &reply:Reply-Message) {
+(1)       if (&reply:EAP-Message && &reply:Reply-Message)  -> FALSE
+(1)       else {
+(1)         [noop] = noop
+(1)       } # else = noop
+(1)     } # policy remove_reply_message_if_eap = noop
+(1)     if (EAP-Key-Name && &reply:EAP-Session-Id) {
+(1)     if (EAP-Key-Name && &reply:EAP-Session-Id)  -> FALSE
+(1)   } # post-auth = noop
+(1) Sent Access-Accept Id 23 from 127.0.0.1:1812 to 127.0.0.1:36111 length 37
+(1)   Reply-Message = "Hello, John Doe"
+(1) Finished request
 
+````
+
+
+Change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter
 Reach out to Rezwan at md.rezwanhassankhan@gmail.com for any further questions. :)
