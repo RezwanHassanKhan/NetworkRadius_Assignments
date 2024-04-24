@@ -8,10 +8,17 @@ def authorize(p):
         # User-Name not found
         radiusd.radlog(radiusd.L_ERR, 'User-Name not found in the request')
         return radiusd.RLM_MODULE_REJECT
+  
+    #Check if User-Name matches the specified pattern
+    #Some test usernames being tested are: Bob, John Doe, \t\t\nbob.
+    
+    #This is excape  sequence equilvalent to \x00\011\012bob in octal sequence form
+    expected_username = "\x00\t\nbob"
 
-    # Check if User-Name matches the specified pattern
-   # if username == "bob":
-    if username == "0\t\nbob":
+    print('escape sequence username returned from radclient :', username)
+    print('escape sequence username :', expected_username)
+    
+    if username == expected_username :
         radiusd.radlog(radiusd.L_INFO, 'User-Name matches the expected value')
         return radiusd.RLM_MODULE_OK
     else:
