@@ -150,6 +150,7 @@ radiusd -X output :\
 <span style="color: red;"> User Name does not match the expected value beacuse when a octal sequence starts with a null character, `radclient` sends the escape sequence with an extra backslash(\). However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
 
 ```console
+....
 ('escape sequence username returned from radclien :', '\\x00\t\nbob')
 ('escape sequence username :', '\x00\t\nbob')
 User-Name does not match the expected value
@@ -200,6 +201,7 @@ radiusd -X output :\
 Input User Name matches the expected valued but send an error 'ERROR: No Auth-Type found: rejecting the user via Post-Auth-Type = Reject', 
 This is because inputted user  name was not found in  /user/local/etc/raddb/users and need to be inserted which is shown in Task 3 and 4. 
 ```console
+....
 ('escape sequence username returned from radclient :', '\t\t\nbob')
 ('escape sequence username :', '\t\t\nbob')
 User-Name matches the expected value
@@ -272,6 +274,7 @@ Received Access-Accept Id 11 from 127.0.0.1:1812 to 127.0.0.1:52876 length 32
 ```
 radiusd -X output :
 ```console
+....
 User-Name matches the expected value
 (0)     [python] = ok
 (0)     [chap] = noop
@@ -347,6 +350,7 @@ Received Access-Accept Id 106 from 127.0.0.1:1812 to 127.0.0.1:56605 length 37
 ```
 radiusd -X output :
 ```console
+....
 User-Name matches the expected value
 (1)     [python] = ok
 (1)     [chap] = noop
