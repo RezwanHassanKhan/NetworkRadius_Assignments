@@ -161,8 +161,8 @@ radiusd -X output :\
 <span style="color: red;"> When a username starts with a null character, `radclient` sends the escape sequence with an extra backslash. However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
 
 ```console
-('username :', '\\x00\t\nbob')
-('expected_username :', '\x00\t\nbob')
+('escape sequence username returned from radclien :', '\\x00\t\nbob')
+('escape sequence username :', '\x00\t\nbob')
 User-Name does not match the expected value
 (0)     [python] = reject
 (0)   } # authorize = reject
@@ -191,6 +191,74 @@ Waking up in 3.9 seconds.
 (0) Cleaning up request packet ID 196 with timestamp +2 due to cleanup_delay was reached
 
 ````
+### 2 .Test for Username = \t\t\nbob or  with password = hellobob and secret : testing123.\
+Sending user name as octal sequence : 
+radtest input : 
+```console
+echo  'User-Name = \011\011\012bob, User-Password = hellobob' | radclient -x localhost auth testing123
+``` 
+radtest output : \
+Although the username matched, the access request was rejected. This user needs to be added to the users file with the appropriate policy settings for authorization.
+```console
+Sent Access-Request Id 76 from 0.0.0.0:60096 to 127.0.0.1:1812 length 46
+	User-Name = "\t\t\nbob"
+	User-Password = "hellobob"
+	Cleartext-Password = "hellobob"
+Received Access-Reject Id 76 from 127.0.0.1:1812 to 127.0.0.1:60096 length 20
+(0) -: Expected Access-Accept got Access-Reject
+```
+radiusd -X output :\
+Input User Name matches the expected valued but send an error 'ERROR: No Auth-Type found: rejecting the user via Post-Auth-Type = Reject', 
+This is because inputted user  name was not found in  /user/local/etc/raddb/users and need to be inserted which is shown in Task 3 and 4. 
+```console
+('escape sequence username returned from radclient :', '\t\t\nbob')
+('escape sequence username :', '\t\t\nbob')
+User-Name matches the expected value
+(0)     [python] = ok
+(0)     [chap] = noop
+(0)     [mschap] = noop
+(0)     [digest] = noop
+(0) suffix: Checking for suffix after "@"
+(0) suffix: No '@' in User-Name = "		 bob", looking up realm NULL
+(0) suffix: No such realm "NULL"
+(0)     [suffix] = noop
+(0) eap: No EAP-Message, not doing EAP
+(0)     [eap] = noop
+(0)     [files] = noop
+(0)     [expiration] = noop
+(0)     [logintime] = noop
+(0) pap: WARNING: No "known good" password found for the user.  Not setting Auth-Type
+(0) pap: WARNING: Authentication will fail unless a "known good" password is available
+(0)     [pap] = noop
+(0)   } # authorize = ok
+(0) ERROR: No Auth-Type found: rejecting the user via Post-Auth-Type = Reject
+(0) Failed to authenticate the user
+(0) Using Post-Auth-Type Reject
+(0) # Executing group from file /usr/local/etc/raddb/sites-enabled/default
+(0)   Post-Auth-Type REJECT {
+(0) attr_filter.access_reject: EXPAND %{User-Name}
+(0) attr_filter.access_reject:    --> \t\t\nbob
+(0) attr_filter.access_reject: Matched entry DEFAULT at line 11
+(0)     [attr_filter.access_reject] = updated
+(0)     [eap] = noop
+(0)     policy remove_reply_message_if_eap {
+(0)       if (&reply:EAP-Message && &reply:Reply-Message) {
+(0)       if (&reply:EAP-Message && &reply:Reply-Message)  -> FALSE
+(0)       else {
+(0)         [noop] = noop
+(0)       } # else = noop
+(0)     } # policy remove_reply_message_if_eap = noop
+(0)   } # Post-Auth-Type REJECT = updated
+(0) Delaying response for 1.000000 seconds
+Waking up in 0.3 seconds.
+Waking up in 0.6 seconds.
+(0) Sending delayed response
+(0) Sent Access-Reject Id 76 from 127.0.0.1:1812 to 127.0.0.1:60096 length 20
+Waking up in 3.9 seconds.
+(0) Cleaning up request packet ID 76 with timestamp +12 due to cleanup_delay was reached
+````
+
+
 ### 2 .Test for Username = bob with password = hellobob and secret : testing123.\
 
 Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
