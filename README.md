@@ -140,12 +140,25 @@ if not found do this step to install python properly:
 1. echo "User-Name = \000\011\012bob, User-Password = hello" | radclient localhost auth testing123
 ```
 ## Result
-Test for Username = John Doe with password = hello and secret : testing123.\
+
+### Test for Username = John Doe with password = hello and secret : testing123.\
 Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
 
 radtest input : 
 ```console
 1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123.
+`
+``radtest output : 
+```console
+Sent Access-Request Id 106 from 0.0.0.0:56605 to 127.0.0.1:1812 length 78
+	User-Name = "John Doe"
+	User-Password = "hello"
+	NAS-IP-Address = 127.0.1.1
+	NAS-Port = 0
+	Message-Authenticator = 0x00
+	Cleartext-Password = "hello"
+Received Access-Accept Id 106 from 127.0.0.1:1812 to 127.0.0.1:56605 length 37
+	Reply-Message = "Hello, John Doe"
 ```
 radiusd -X output :
 ```console
