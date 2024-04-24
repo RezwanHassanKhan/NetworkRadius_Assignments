@@ -259,10 +259,12 @@ Waking up in 3.9 seconds.
 ````
 
 
-### 2 .Test for Username = bob with password = hellobob and secret : testing123.\
-
-Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
-
+### 3 .Test for Username = bob with password = hellobob and secret : testing123.\
+Add user credetials  in the /usr/local/etc/raddb/users like this :
+```console
+bob     Cleartext-Password := "hellobob"
+        Reply-Message := "Hello, %{User-Name}"
+```
 radtest input : 
 ```console
 1. radtest -x 'bob' hellobob 127.0.0.1 0 testing123
@@ -330,10 +332,14 @@ User-Name matches the expected value
 (0)   Reply-Message = "Hello, bob"
 (0) Finished request
 ```
-### 3.Test for Username = John Doe with password = hello and secret : testing123.\
+### 4.Test for Username = John Doe with password = hello and secret : testing123.\
 
 Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
-
+Add user credetials  in the /usr/local/etc/raddb/users like this :
+```console
+"John Doe"      Cleartext-Password := "hello"
+                Reply-Message = "Hello, %{User-Name}"
+```
 radtest input : 
 ```console
 1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123
