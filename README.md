@@ -141,14 +141,15 @@ if not found do this step to install python properly:
 ```
 ## Result
 
-### Test for Username = John Doe with password = hello and secret : testing123.\
+### 1 .Test for Username = John Doe with password = hello and secret : testing123.\
+
 Before test, change the policy for white_space from this location : sudo vim /usr/local/etc/raddb/policy.d/filter.\
 
 radtest input : 
 ```console
 1. radtest -x 'John Doe' hello 127.0.0.1 0 testing123.
-`
-``radtest output : 
+```
+radtest output : 
 ```console
 Sent Access-Request Id 106 from 0.0.0.0:56605 to 127.0.0.1:1812 length 78
 	User-Name = "John Doe"
