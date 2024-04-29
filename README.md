@@ -132,10 +132,11 @@ if not found do this step to install python properly:
 
 ### 1 .Test for Username = \0\t\nbob or \\x00\t\nbob with password = hellobob and secret : testing123.\
 Sending user name as octal sequence : 
-radtest input : 
+radclient input : 
 ```console
 echo  'User-Name = \x00\011\012bob, User-Password = hellobob' | radclient -x localhost auth testing123
 ```
+radclient output :
 ```console
 Sent Access-Request Id 84 from 0.0.0.0:54040 to 127.0.0.1:1812 length 49
 	User-Name = "\\x00\t\nbob"
@@ -145,6 +146,7 @@ Received Access-Reject Id 84 from 127.0.0.1:1812 to 127.0.0.1:54040 length 20
 (0) -: Expected Access-Accept got Access-Reject
 ```
 radiusd -X output :\
+```console
 ('escape sequence username returned from radclient :', '\\x00\t\nbob')
 ('escape sequence username :', '\\x00\t\nbob')
 User-Name matches the expected value
@@ -190,7 +192,6 @@ Waking up in 0.6 seconds.
 (0) Sent Access-Reject Id 84 from 127.0.0.1:1812 to 127.0.0.1:54040 length 20
 Waking up in 3.9 seconds.
 (0) Cleaning up request packet ID 84 with timestamp +13 due to cleanup_delay was reached
-
 ````
 ### 2 .Test for Username = \t\t\nbob or  with password = hellobob and secret : testing123.\
 Sending user name as octal sequence : 
