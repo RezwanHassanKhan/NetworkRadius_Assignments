@@ -130,32 +130,43 @@ if not found do this step to install python properly:
 
 ## Testing 
 
-### 1 .Test for Username = \0\t\nbob or \x00\t\nbob with password = hellobob and secret : testing123.\
+### 1 .Test for Username = \0\t\nbob or \\x00\t\nbob with password = hellobob and secret : testing123.\
 Sending user name as octal sequence : 
 radtest input : 
 ```console
 echo  'User-Name = \x00\011\012bob, User-Password = hellobob' | radclient -x localhost auth testing123
 ```
-We are sunding \000 as \x00 or else radclient return the usename as "". 
-radtest output : 
 ```console
-Sent Access-Request Id 118 from 0.0.0.0:57029 to 127.0.0.1:1812 length 49
+Sent Access-Request Id 84 from 0.0.0.0:54040 to 127.0.0.1:1812 length 49
 	User-Name = "\\x00\t\nbob"
 	User-Password = "hellobob"
 	Cleartext-Password = "hellobob"
-Received Access-Reject Id 118 from 127.0.0.1:1812 to 127.0.0.1:57029 length 20
-(0) -: Expected Access-Accept got Access-Reject"
+Received Access-Reject Id 84 from 127.0.0.1:1812 to 127.0.0.1:54040 length 20
+(0) -: Expected Access-Accept got Access-Reject
 ```
 radiusd -X output :\
-<span style="color: red;"> User Name does not match the expected value beacuse when a octal sequence starts with a null character, `radclient` sends the escape sequence with an extra backslash(\). However, it correctly handles octal sequences that do not start with a null character, as demonstrated in Test 2.</span>
-
-```console
-....
-('escape sequence username returned from radclien :', '\\x00\t\nbob')
-('escape sequence username :', '\x00\t\nbob')
-User-Name does not match the expected value
-(0)     [python] = reject
-(0)   } # authorize = reject
+('escape sequence username returned from radclient :', '\\x00\t\nbob')
+('escape sequence username :', '\\x00\t\nbob')
+User-Name matches the expected value
+(0)     [python] = ok
+(0)     [chap] = noop
+(0)     [mschap] = noop
+(0)     [digest] = noop
+(0) suffix: Checking for suffix after "@"
+(0) suffix: No '@' in User-Name = "\x00	 bob", looking up realm NULL
+(0) suffix: No such realm "NULL"
+(0)     [suffix] = noop
+(0) eap: No EAP-Message, not doing EAP
+(0)     [eap] = noop
+(0)     [files] = noop
+(0)     [expiration] = noop
+(0)     [logintime] = noop
+(0) pap: WARNING: No "known good" password found for the user.  Not setting Auth-Type
+(0) pap: WARNING: Authentication will fail unless a "known good" password is available
+(0)     [pap] = noop
+(0)   } # authorize = ok
+(0) ERROR: No Auth-Type found: rejecting the user via Post-Auth-Type = Reject
+(0) Failed to authenticate the user
 (0) Using Post-Auth-Type Reject
 (0) # Executing group from file /usr/local/etc/raddb/sites-enabled/default
 (0)   Post-Auth-Type REJECT {
@@ -176,9 +187,9 @@ User-Name does not match the expected value
 Waking up in 0.3 seconds.
 Waking up in 0.6 seconds.
 (0) Sending delayed response
-(0) Sent Access-Reject Id 196 from 127.0.0.1:1812 to 127.0.0.1:42626 length 20
+(0) Sent Access-Reject Id 84 from 127.0.0.1:1812 to 127.0.0.1:54040 length 20
 Waking up in 3.9 seconds.
-(0) Cleaning up request packet ID 196 with timestamp +2 due to cleanup_delay was reached
+(0) Cleaning up request packet ID 84 with timestamp +13 due to cleanup_delay was reached
 
 ````
 ### 2 .Test for Username = \t\t\nbob or  with password = hellobob and secret : testing123.\
