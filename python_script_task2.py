@@ -13,7 +13,7 @@ def authorize(p):
     #Some test usernames being tested are: Bob, John Doe, \t\t\nbob.
     
     #This is excape  sequence equilvalent to \x00\011\012bob in octal sequence form
-    expected_username = "\x00\t\nbob"
+    expected_username = "\\x00\t\nbob"
 
     print('escape sequence username returned from radclient :', username)
     print('escape sequence username :', expected_username)
